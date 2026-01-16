@@ -1,0 +1,29 @@
+name: MongoDB Migration CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  workflow_dispatch:
+
+jobs:
+  migration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run MongoDB migration
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          DB_NAME: migration_demo
+          COLLECTION_NAME: users
+          FIELD_NAME: country
+          FIELD_VALUE: India
+        run: python main.py
